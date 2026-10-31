@@ -4,9 +4,65 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="My contact details and links">
+  <meta name="color-scheme" content="light dark">
   <title>Chin Yong Wei | Connect</title>
 
+  <!-- Apply the theme before rendering to reduce flashing. -->
+  <script>
+    (() => {
+      let savedTheme = null;
+
+      try {
+        savedTheme = localStorage.getItem("theme");
+      } catch {}
+
+      const systemTheme =
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+
+      document.documentElement.dataset.theme =
+        savedTheme === "dark" || savedTheme === "light"
+          ? savedTheme
+          : systemTheme;
+    })();
+  </script>
+
   <style>
+    :root {
+      color-scheme: light;
+      --background: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --subtle: #64748b;
+      --border: #e2e8f0;
+      --avatar-bg: #dbeafe;
+      --avatar-text: #1d4ed8;
+      --button-bg: #0f172a;
+      --button-text: #ffffff;
+      --button-hover: #334155;
+      --focus: #2563eb;
+      --shadow: 0 12px 40px rgb(15 23 42 / 8%);
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --background: #0b1120;
+      --card: #111827;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --subtle: #94a3b8;
+      --border: #334155;
+      --avatar-bg: #1e3a5f;
+      --avatar-text: #93c5fd;
+      --button-bg: #e2e8f0;
+      --button-text: #0f172a;
+      --button-hover: #ffffff;
+      --focus: #93c5fd;
+      --shadow: 0 12px 40px rgb(0 0 0 / 25%);
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -14,22 +70,50 @@
     body {
       margin: 0;
       min-height: 100vh;
+      min-height: 100svh;
       display: grid;
       place-items: center;
       padding: 24px;
       font-family: system-ui, sans-serif;
-      background: #f1f5f9;
-      color: #0f172a;
+      background: var(--background);
+      color: var(--text);
     }
 
     main {
       width: 100%;
       max-width: 420px;
-      padding: 36px 24px;
-      background: white;
+      padding: 20px 24px 32px;
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 24px;
       text-align: center;
-      box-shadow: 0 12px 40px rgb(15 23 42 / 8%);
+      box-shadow: var(--shadow);
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 16px;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .theme-toggle:hover {
+      background: var(--background);
     }
 
     .avatar {
@@ -39,8 +123,8 @@
       height: 80px;
       margin: 0 auto 20px;
       border-radius: 50%;
-      background: #dbeafe;
-      color: #1d4ed8;
+      background: var(--avatar-bg);
+      color: var(--avatar-text);
       font-size: 28px;
       font-weight: 700;
     }
@@ -50,9 +134,9 @@
       font-size: 28px;
     }
 
-    p {
+    .intro {
       margin: 0 0 28px;
-      color: #475569;
+      color: var(--muted);
       line-height: 1.6;
     }
 
@@ -61,45 +145,77 @@
       gap: 12px;
     }
 
-    a {
+    nav a {
       display: block;
       padding: 14px;
       border-radius: 12px;
-      background: #0f172a;
-      color: white;
+      background: var(--button-bg);
+      color: var(--button-text);
       text-decoration: none;
       font-weight: 600;
+      overflow-wrap: anywhere;
     }
 
-    a:hover {
-      background: #334155;
+    nav a:hover {
+      background: var(--button-hover);
     }
 
-    a:focus-visible {
-      outline: 3px solid #2563eb;
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--focus);
       outline-offset: 4px;
     }
 
     footer {
       margin-top: 24px;
       font-size: 13px;
-      color: #64748b;
+      color: var(--subtle);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      body,
+      main,
+      .avatar,
+      .theme-toggle,
+      nav a {
+        transition:
+          background-color 180ms ease,
+          color 180ms ease,
+          border-color 180ms ease;
+      }
     }
   </style>
 </head>
 
 <body>
   <main>
+    <div class="toolbar">
+      <button
+        class="theme-toggle"
+        id="theme-toggle"
+        type="button"
+        aria-label="Dark mode"
+        aria-pressed="false"
+        hidden
+      >
+        <span id="theme-icon" aria-hidden="true">☾</span>
+        <span>Dark mode</span>
+      </button>
+    </div>
+
     <div class="avatar" aria-hidden="true">YN</div>
 
     <h1>Chin Yong Wei</h1>
-    <p>NUS Data Science Penultimate Undergraduate | Ex-Deutsche Bank | Ex-Shell.<br>Let's connect!</p>
+    <p class="intro">
+      NUS DSA Penultimate Student<br>
+      Let's connect!
+    </p>
 
     <nav aria-label="Contact and social links">
-      <a href="mailto:chinyongwei@live.com">Email me</a>
       <a href="https://www.linkedin.com/in/chin-yong-wei/">
         LinkedIn
       </a>
+      <a href="mailto:chinyongwei@live.com">Email me</a>
       <a href="https://www.instagram.com/_yong.wei_/">
         Instagram
       </a>
@@ -110,5 +226,50 @@
 
     <footer>Thanks for stopping by.</footer>
   </main>
+
+  <script>
+    const root = document.documentElement;
+    const toggle = document.getElementById("theme-toggle");
+    const icon = document.getElementById("theme-icon");
+    const systemPreference =
+      window.matchMedia("(prefers-color-scheme: dark)");
+
+    let manuallySelected = false;
+
+    try {
+      const savedTheme = localStorage.getItem("theme");
+      manuallySelected =
+        savedTheme === "dark" || savedTheme === "light";
+    } catch {}
+
+    function applyTheme(theme) {
+      const isDark = theme === "dark";
+
+      root.dataset.theme = theme;
+      toggle.setAttribute("aria-pressed", String(isDark));
+      icon.textContent = isDark ? "☀" : "☾";
+    }
+
+    applyTheme(root.dataset.theme);
+    toggle.hidden = false;
+
+    toggle.addEventListener("click", () => {
+      const nextTheme =
+        root.dataset.theme === "dark" ? "light" : "dark";
+
+      manuallySelected = true;
+      applyTheme(nextTheme);
+
+      try {
+        localStorage.setItem("theme", nextTheme);
+      } catch {}
+    });
+
+    systemPreference.addEventListener("change", (event) => {
+      if (!manuallySelected) {
+        applyTheme(event.matches ? "dark" : "light");
+      }
+    });
+  </script>
 </body>
 </html>
